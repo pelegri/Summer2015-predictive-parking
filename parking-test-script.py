@@ -1,14 +1,34 @@
-#Jasper Chen
-#Date: June 22, 2015
+#!/usr/bin/env python
+"""
+Author - Jasper Chen 
+Date - June 22, 2015
+
+Description - The script aggregates and reformats parking and weather
+information from various data sources.
+
+Functions - Pushes JSON files into an Amazon S3 bucket.
+
+APIs Used - Vimoc Technologies: provides parking sensor data 
+	in JSON format (http://sdk.landscape-computing.com/)
+	 - OpenWeatherMap: provides real-time weather data 
+	in JSON format (http://api.openweathermap.org/)
+
+Use - Intended to be called using a CRON task, which periodically
+calls this script.
+"""
 
 import requests
 import time
 import json
 import os
-API_KEY = os.environ['HOME'].get('VIMOC_API_KEY')
+import boto
+from boto.s3.key import Key
+
+API_KEY = os.environ.get('VIMOC_API_KEY') #in bash_profile
 
 class Parking():
 	def __init__(self):
+		"""Create dictionaries relating to parking"""
 		self.occupancy_by_sensor = {}
 		self.sensors_by_zone = {}
 		self.vacancy_by_zone = {}
@@ -20,14 +40,12 @@ class Parking():
 		self.timestamp = r.json()[0]['readingTime'].encode('utf-8')
 
 	def get_all_zones(self):
+		"""Retrieve all zones."""
 		r = requests.get('http://api.landscape-computing.com/api/rest/v1/sites/?key=' + API_KEY, headers={'content-type': 'application/json', 'Accept': 'application/json'})
 		r_json = r.json()
 
-		#print r_json
-
 		all_zones = []
 
-		#unordered list and O(N^2) implementation
 		for i in range(len(r_json)):
 			j = 0
 			zone_num = len(r_json[i][u'zone'])
@@ -40,7 +58,8 @@ class Parking():
 		return all_zones
 
 	def get_all_sites(self):
-		#unordered list and O(N) implementation
+		"""Returns all sites."""
+
 		r = requests.get('http://api.landscape-computing.com/api/rest/v1/sites/?key=' + API_KEY, headers={'content-type': 'application/json', 'Accept': 'application/json'})
 		r_json = r.json()
 
@@ -51,7 +70,8 @@ class Parking():
 		return all_sites
 
 	def create_dict_site_vacancy(self,site):
-		#O(N) implementation
+		"""Returns a site vacancy."""
+
 		r = requests.get('http://api.landscape-computing.com/nboxws/rest/v1/site/' + site + '/query/summary/?key=' + API_KEY)
 		raw_sensor_list = r.text.split('|')
 
@@ -64,7 +84,13 @@ class Parking():
 			self.occupancy_by_sensor[sensor_id] = sensor_occ
 
 	def site_wrapper(self,site_list):
-		#O(N) implementation
+		"""Calls 'create_dict_site_vacancy' for each site
+
+		Keyword arguments:
+		site_list -- a list of sites
+
+		""" 
+
 		for i in range(len(site_list)):
 			self.create_dict_site_vacancy(site_list[i])
 
@@ -96,7 +122,6 @@ class Parking():
 				broken_sensors+=1
 				i+=1
 		available_sensors = num_sensors - broken_sensors
-		#print zone,available_sensors
 		if available_sensors > 0:
 			self.vacancy_by_zone[zone] = {'vacancy' : float(count)/float(available_sensors), 'count' : available_sensors}
 		else:
@@ -113,7 +138,6 @@ class Parking():
 		self.zone_wrapper(self.zones)
 		self.vacancy_wrapper(self.zones)
 		self.time_by_zone[self.timestamp.encode('utf-8')] = self.vacancy_by_zone
-		print self.time_by_zone
 
 class Weather():
 	def __init__(self, lat, lon):
@@ -131,16 +155,16 @@ class Weather():
 	def main(self):
 		return {'lat': self.lat, 'lon': self.lon, 'sunrise': self.sunrise, 'sunset': self.sunset, 'weather': self.weather, 'wind': self.wind, 'temp_f': self.temp_f, 'humidity': self.humidity}
 
-# class Weather(object):
-# 	def __init__(self, value):
-# 		self.parking = value
-
-# 	def get_weather_by_zone(self, zone):
-# 		print zone
-
-# 	def zone_wrapper(self):
-# 		for i in range(len(self.parking.zones)):
-# 			self.get_weather_by_zone(self.parking.zones[i])
+class S3():
+	def __init__(self, content, time, zone):
+		c = boto.connect_s3()
+		b = c.get_bucket('parkingbucket')
+		k = Key(b)
+		filename = time + '_' + zone + '.json'
+		with open(filename,'w+') as f:
+			f.write(content)
+		k.key = filename
+		k.set_contents_from_filename(filename)
 
 if __name__ == '__main__':
 	p = Parking()
@@ -149,7 +173,8 @@ if __name__ == '__main__':
 	for i in range(len(p.zones)):
 		w = Weather(p.latlon_by_zone[p.zones[i]]['latitude'],p.latlon_by_zone[p.zones[i]]['longitude'])
 		try: 
-			d = json.loads({p.timestamp: {p.zones[i]: {'weather_field': w.main(), 'vacancy_field': p.vacancy_by_zone[p.zones[i]]}}})
+			d = json.dumps({'time': p.timestamp, 'zone': p.zones[i], 'weather_field': w.main(), 'vacancy_field': p.vacancy_by_zone[p.zones[i]]})
+			S3(d, p.timestamp, p.zones[i])
 		except KeyError:
 			pass
 
