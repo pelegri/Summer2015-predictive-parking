@@ -24,6 +24,7 @@ import os
 import boto
 from boto.s3.key import Key
 
+API_KEY = os.environ.get('VIMOC_API_KEY') #in bash_profile
 AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
 
@@ -38,9 +39,6 @@ class Parking():
 		self.latlon_by_zone = {}
 		self.site_by_zone = {}
 		self.timezone_by_zone = {}
-		API_KEY = os.environ.get('VIMOC_API_KEY') #in bash_profile
-		
-
 
 		r = requests.get('http://api.landscape-computing.com/api/rest/v1/sensor/pa_1_P1/query/occupied?key=' + API_KEY, headers={'content-type': 'application/json', 'Accept': 'application/json'})
 		self.timestamp = r.json()[0]['readingTime'].encode('utf-8')
