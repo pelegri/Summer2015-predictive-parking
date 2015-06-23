@@ -177,9 +177,7 @@ class S3():
 		if not os.path.exists(sub_dir):
 			os.makedirs(sub_dir)
 		with open(os.path.join(sub_dir,filename),'w+') as f:
-		#with open(filename,'w+') as f:
-			print 'test'
-			#f.write(content)
+			f.write(content)
 		k.key = filename
 		k.set_contents_from_filename(os.path.join(sub_dir,filename))
 
@@ -193,9 +191,9 @@ if __name__ == '__main__':
 			try: 
 				d = json.dumps({'time': p.timestamp, 'zone': p.zones[i], 'timezone': p.timezone_by_zone[p.zones[i]], 'weather_field': w.main(), 'vacancy_field': p.vacancy_by_zone[p.zones[i]]})
 				S3(d, p.timestamp, p.zones[i])
-				print 'done'
+				#print 'done'
 			except KeyError:
-				print 'failed'
+				#print 'failed'
 				pass
 	run()
 	
