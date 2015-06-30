@@ -169,7 +169,7 @@ class Weather():
 class S3():
 	def __init__(self, content, time, zone):
 		c = boto.connect_s3(AWS_ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY)
-		b = c.get_bucket('parkingbucket')
+		b = c.get_bucket('parkingbucketv2')
 		k = Key(b)
 		sub_dir = 'files'
 		filename = time + '_' + zone + '.json'
