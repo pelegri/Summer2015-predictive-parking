@@ -1,0 +1,8 @@
+div.address {
+	text-align: center;
+}
+div.destination {
+	text-align: center;
+}
+
+.angular-google-map-container { height: 400px; }
