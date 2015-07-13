@@ -1,8 +1,5 @@
-var app = angular.module('myApp', ['map']);
-app.controller('formCtrl', function($scope) {
-    $scope.master = {firstName: 'John', lastName: 'Doe'};
-    $scope.reset = function() {
-        $scope.user = angular.copy($scope.master);
-    };
-    $scope.reset();
-});
+'use strict'
+var app = angular.module('myApp', ['uiGmapgoogle-maps']);
+app.controller('mainCtrl', ['$scope', function($scope) {
+    $scope.map = { center: { latitude: 37.44496, longitude: -122.161648 }, zoom: 19 };
+}]);

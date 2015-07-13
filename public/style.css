@@ -1,8 +1,105 @@
-div.address {
-	text-align: center;
+div.ng{
+	background-color: black
 }
-div.destination {
+
+input.form-control{
+	width: 300px;
+	display: inline-block;
+}
+
+/*div {
+	font-family: Georgia,serif;
+	text-align: inline-block;
+}*/
+
+h2 {
 	text-align: center;
 }
 
-.angular-google-map-container { height: 400px; }
+p {
+	margin: 20px 0px 20px 0px;
+}
+
+span {
+	margin: 0px 10px 0px 10px ;
+}
+
+button {
+	height: 100px;
+	margin: 0px 10px 0px 10px;
+}
+
+input{
+	width: 500px;
+	margin: 0px 10px 0px 10px;
+}
+
+form {
+	height: 450px;
+	width: 700px;
+	display: block;
+	text-align: center;
+}
+
+div.title{
+	height: 50px;
+	text-align: center;
+	background-color: orange;
+}
+
+/*img {
+	height: 30px;
+	display: inline-block;
+}*/
+
+
+div.header{
+	height: 50px;
+	/*background-color: #000000;*/
+}
+
+table{
+	margin: 0 auto;
+	text-align: center;
+}
+
+div.address {
+	display: block;
+	margin: 20px 0px 20px 0px;
+}
+
+div.destination {
+	display: block;
+	margin: 20px 0px 20px 0px;
+}
+
+div.departure {
+	display: block;
+	margin: 20px 0px 20px 0px;
+}
+
+div.button {
+	display: inline-block;
+	margin: 20px 0px 20px 0px;
+}
+
+
+div.form_container {
+	display: block;
+	margin: auto;
+	width: 700px;
+	outline: 1px solid orange;
+}
+
+div.map_container {
+	display: block;
+	margin: auto;
+	width: 700px;
+	outline: 1px solid orange;
+}
+
+.angular-google-map-container {
+	margin: auto;
+	height: 400px; 
+	width: 700px;
+}
