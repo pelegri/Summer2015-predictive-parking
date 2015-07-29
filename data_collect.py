@@ -160,7 +160,7 @@ class Weather():
 		self.sunset = r_json['sys']['sunset']
 		self.weather = r_json[u'weather'][0][u'main'].encode('utf-8')
 		self.wind = r_json[u'wind'][u'speed']
-		self.temp_f = (float(r_json[u'main'][u'temp']) - 273.15)/1.8 + 32.00
+		self.temp_f = (float(r_json[u'main'][u'temp']) - 273.15)/1.8 + 32.00 #temp conversion to fahrenheit from celsius
 		self.humidity = r_json[u'main']['humidity']
 	
 	def main(self):
@@ -169,7 +169,7 @@ class Weather():
 class S3():
 	def __init__(self, content, time, zone):
 		c = boto.connect_s3(AWS_ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY)
-		b = c.get_bucket('parkingbucketv2')
+		b = c.get_bucket('<REPLACE>') #replace with bucketname located in Amazon
 		k = Key(b)
 		sub_dir = 'files'
 		filename = time + '_' + zone + '.json'

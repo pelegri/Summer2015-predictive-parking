@@ -2,6 +2,17 @@ div.ng{
 	background-color: black
 }
 
+div.description{
+	text-align: center;
+	padding-top: 100px;
+}
+
+div.form-title{
+	margin-top: 50px;
+}
+div.test{
+	height: 100px;
+}
 input.form-control{
 	width: 300px;
 	display: inline-block;
@@ -12,8 +23,11 @@ input.form-control{
 	text-align: inline-block;
 }*/
 
-h2 {
+div.title h2 {
 	text-align: center;
+	margin-top: 0px;
+  	margin-bottom: 0px;
+  	padding-top: 10px;
 }
 
 p {
@@ -25,18 +39,17 @@ span {
 }
 
 button {
-	height: 100px;
 	margin: 0px 10px 0px 10px;
 }
 
 input{
-	width: 500px;
+	width: 400px;
 	margin: 0px 10px 0px 10px;
 }
 
 form {
-	height: 450px;
-	width: 700px;
+	height: 400px;
+	width: 500px;
 	display: block;
 	text-align: center;
 }
@@ -47,15 +60,18 @@ div.title{
 	background-color: orange;
 }
 
-/*img {
-	height: 30px;
-	display: inline-block;
-}*/
-
+div.privacy{
+	font-size: 8px;
+	text-align: center;
+}
 
 div.header{
 	height: 50px;
 	/*background-color: #000000;*/
+}
+
+p.map{
+	text-align: center;
 }
 
 table{
@@ -87,15 +103,14 @@ div.button {
 div.form_container {
 	display: block;
 	margin: auto;
-	width: 700px;
+	width: 500px;
 	outline: 1px solid orange;
 }
 
 div.map_container {
 	display: block;
-	margin: auto;
+	padding-top: 50px;
 	width: 700px;
-	outline: 1px solid orange;
 }
 
 .angular-google-map-container {

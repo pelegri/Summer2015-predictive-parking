@@ -12,18 +12,43 @@ function initialize($scope) {
         types: ['geocode']
     });
 
+    $scope.startmarker = [];
+    $scope.destmarker = [];
+
+
     google.maps.event.addListener(auto_address, 'place_changed', function(){
     	var place_address = auto_address.getPlace();
     	console.log(place_address.geometry.location);
     	$scope.formData.c_loc = place_address.geometry.location;
+     	$scope.startmarker = 
+    	{
+    		id: 1,
+    		coords: {
+    			latitude: $scope.formData.c_loc.k,
+    			longitude: $scope.formData.c_loc.D
+    		},
+    	}
+    	console.log($scope.startmarker)
+    	$scope.markers = [];
     });
 
     google.maps.event.addListener(auto_destination, 'place_changed', function(){
     	var place_destination = auto_destination.getPlace();
-    	console.log(place_destination.geometry.location);
+    	/*console.log(place_destination.geometry.location);*/
     	$scope.formData.d_loc = place_destination.geometry.location;
+  /*  	$scope.destmarker = 
+    	{
+    		id: 1,
+    		coords: {
+    			latitude: $scope.formData.d_loc.k,
+    			longitude: $scope.formData.d_loc.D
+    		},
+    	}
+    	console.log($scope.destmarker)*/
+    	$scope.markers = [];
     });
 }
+
 
 var app = angular.module('myApp', ['uiGmapgoogle-maps','ui.bootstrap'])
 	.config(function(uiGmapGoogleMapApiProvider) {
@@ -35,16 +60,52 @@ var app = angular.module('myApp', ['uiGmapgoogle-maps','ui.bootstrap'])
     });
 
 app.controller('mainCtrl', ['$scope', function($scope) {
+		$scope.locations = [
+			{lat: -32.929971, lon: 151.772984},
+			{lat: -32.931280, lon: 151.770883}, 
+			{lat: 37.2206992743, lon: -121.9846208062},
+			{lat: 37.2211670292, lon: -121.9837544527},
+			{lat: 37.2221516545, lon: -121.9833387103},
+			{lat: 37.2222114577, lon: -121.9840012160},
+			{lat: 37.444506, lon: -122.160745},
+			{lat: 37.444751, lon: -122.16109}];
+
+		var createMarker = function(i) {
+
+			var array = $scope.locations;
+			//create a model of a marker for Google Maps API
+			var ret = {
+		    
+		    id: i,
+		    latitude: array[i].lat,
+		    longitude: array[i].lon,
+			}
+
+		    return ret
+		};
+
 	    $scope.formData = {
 	    	c_loc: 'default',
 	    	d_loc: 'default',
 	    	date: 'default',
-	    	mytime: 'default'
+	    	mytime: 'default',
 	    };
 
-	    $scope.map = { center: { latitude: 37.44496, longitude: -122.161648 }, zoom: 19 };
+	    $scope.map = { center: { latitude: 37.44496, longitude: -122.161648 }, zoom: 9 };
 
 	    initialize($scope);
+
+	    $scope.markers = [];
+
+	    $scope.startmarker = [];
+
+	    $scope.destmarker = [];
+
+		var length = Object.keys($scope.locations).length;
+
+		for (var i = 0; i < length; i++) {
+			$scope.markers.push(createMarker(i))};
+		console.log($scope.markers);
 
 	}]);
 
@@ -157,7 +218,7 @@ app.controller('DatepickerDemoCtrl', function ($scope, $log){
 	    };
 	});
 
-app.controller('SubmitCtrl', function($scope,$http){
+app.controller('SubmitCtrl', function($scope,$rootScope,$http){
 	$scope.formsubmit = function(){
 		console.log($scope.formData);
 		$http.get('/api/getestimate/', {params:{
@@ -167,16 +228,29 @@ app.controller('SubmitCtrl', function($scope,$http){
 			'time' : $scope.formData.mytime
 		}})
 	    .success(function(data){
-		  $scope.result = 'You have a ' + data + '% Chance';
+	    	$http.get('/test/', {params:{
+	    		'hour': data.hour,
+	    		'coords': data.coords}})
+	    	.success(function(data){
+	    		$rootScope.destmarker = [];
+	    		var coords = data.coordinates.split(",")
+			    $rootScope.destmarker = 
+	  	    	{
+		    		id: 1,
+		    		coords: {
+		    			latitude: coords[0],
+		    			longitude: coords[1]
+		    		},
+		    	}
+		    	console.log($rootScope.destmarker)
+	    		if (data.vacancy > 0.8) {
+	    			$scope.result = 'You should probably head out soon.';
+	    		} else if (data.vacancy > 0.6 && data.vacancy < 0.8) {
+	    			$scope.result = 'I think you can do it.'}
+	    		else {
+	    			$scope.result = "Take your time!";
+	    		}
+	    	})
 		});
-	};
-});
-
-app.controller('testCtrl', function($scope, $http){
-	$scope.formsubmit = function(){
-		$http.get('/test/')
-		.success(function(data){
-			$scope.test = data;
-		});
-	};
+	}
 });

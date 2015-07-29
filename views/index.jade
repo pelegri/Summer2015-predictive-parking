@@ -16,47 +16,57 @@ html
     script(src='/bower_components/angular-bootstrap/ui-bootstrap-tpls.js')
 
   body
-    nav(class="navbar navbar-default")
-      ul(class="nav nav-tabs")
-        li(role="presentation" class="active")
-          a(href="#") Home
+    div.title
+      h2 Dash
     div(ng-app='myApp')
-      div(class="button test", ng-controller="testCtrl")
-        button(class = "btn btn-default btn-sm" ng-click="formsubmit()") Submit
-          pre {{test}}
-
       div(ng-controller="mainCtrl")
-        div.form_container
-          form
-            h3 Where are you coming from?
-            div.address
-              span Address
-              input(id="autocomplete_address", placeholder="Enter your current location", ng-model="address", ng-change="changed()")
-            h3 Awesome! Where next?
-            div.destination
-              span Destination
-              input(id="autocomplete_destination", placeholder="Enter your destination", ng-model="destination", ng-change="changed()")
-            h3 Cool, when are you planning on leaving?
+        div.row
+          div.col-md-5
+            div.form_container
+              form
+                div.form-title
+                  h3 The "Calculator"
+                div.address
+                  span Address
+                  input(id="autocomplete_address", placeholder="Enter your current location", ng-model="address", ng-change="changed()")
+                div.destination
+                  span Destination
+                  input(id="autocomplete_destination", placeholder="Enter your destination", ng-model="destination", ng-change="changed()")
+                div(ng-controller="DatepickerDemoCtrl")
+                  input(type="text",class="form-control", datepicker-popup="{{format}}", ng-model="dt", is-open="opened", min-date="minDate", ng-change="changed()" max-date="'2016-12-30'", datepicker-options="dateOptions", ng-required="true", close-text="Close")
+                  
+                  button(class="btn btn-default",ng-click="open($event)")
+                    i(class="glyphicon glyphicon-calendar")
 
-            div(ng-controller="DatepickerDemoCtrl")
-              input(type="text",class="form-control", datepicker-popup="{{format}}", ng-model="dt", is-open="opened", min-date="minDate", ng-change="changed()" max-date="'2016-12-30'", datepicker-options="dateOptions", ng-required="true", close-text="Close")
-              
-              button(class="btn btn-default",ng-click="open($event)")
-                i(class="glyphicon glyphicon-calendar")
+                div(class="clock",ng-controller="TimepickerDemoCtrl")
+                  timepicker(ng-model="mytime" ng-change="changed()" hour-step="hstep" minute-step="mstep" show-meridian="ismeridian")
 
-            div(class="clock",ng-controller="TimepickerDemoCtrl")
-              timepicker(ng-model="mytime" ng-change="changed()" hour-step="hstep" minute-step="mstep" show-meridian="ismeridian")
+                div(class="button", ng-controller="SubmitCtrl")
+                  button(class = "btn btn-default btn-sm" ng-click="formsubmit(); updatemap()") Submit
+                  pre {{result}}
+          div.col-md-7      
+            div.map_container
+              ui-gmap-google-map(center='map.center', zoom='map.zoom')
+                ui-gmap-markers(models='markers', coords="'self'", icon = '{url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png" }')
+                  {{markers}}
+                ui-gmap-marker(idkey="1", coords="startmarker.coords", icon = '{url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png" }')
+                  {{startmarker}}
+                ui-gmap-marker(idkey="1", coords="$root.destmarker.coords", icon = '{url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png" }')
+                  {{$root.destmarker}}
 
-            div(class="button", ng-controller="SubmitCtrl")
-              button(class = "btn btn-default btn-sm" ng-click="formsubmit()") Submit
-              pre {{result}}
-
-          div.map_container
-            p.class
-              h2 Map
-            ui-gmap-google-map(center='map.center', zoom='map.zoom')
-         
-          script(type='text/ng-template',id='searchbox.tpl.html')
+           
+            script(type='text/ng-template',id='searchbox.tpl.html')          
+            div 
+        div.row
+          div.col-md-12
+            div.description
+              p Only covers areas in Palo Alto, CA, Los Gatos, CA and Newcastle, Australia.
+        div.row
+          div.col-md-12
+            div.privacy
+              p The information you provide is not stored.
+              p © 2015 Jasper Chen
+              p All Rights Reserved.
       
 
           

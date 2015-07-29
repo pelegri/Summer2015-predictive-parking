@@ -1,0 +1,16 @@
+{
+  "name": "parkdash",
+  "version": "0.0.1",
+  "description": "Predicts the ease in finding parking near a destination",
+  "main": "./server.js",
+  "dependencies" : {
+    "express" : "4.12.x",
+    "request" : "2.55.x",
+    "path" : "0.11.x",
+    "mongoose" : "4.0.x",
+    "jade": "1.11.x"
+  },
+  "engines" : {
+  	"node" : "0.12.x"
+  }
+}

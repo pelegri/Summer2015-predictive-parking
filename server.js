@@ -5,7 +5,11 @@ var express = require('express');
 var app = express();
 var path = require('path');
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/mydb');
+var options = {
+	user: '<REPLACE>', // fill username here
+	pass: '<REPLACE>' // file password here
+}
+mongoose.connect('<REPLACE>', options); //replace with mongo URI here
 
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
@@ -27,36 +31,61 @@ app.get('/', function(req, res){
 });
 
 app.get('/test/', function(req, res){
-  Parking.findOne({ coordinates: '-32.929971, 151.772984' }, function(err, thor) {
-  if (err) return console.error(err);
-     res.send(thor);
-	});
+  var hour = req.param('hour');
+  var coordinates = req.param('coords')
+  Parking.findOne({coordinates: coordinates, hour: hour}, function(err, thor) {
+  if (err) 
+  	return console.error(err);
+  
+  res.send(thor);
+  });
 });
 
 app.get('/api/getestimate/', function(req, res){
 	var c_loc = req.param('c_loc');
-	var d_loc = req.param('d_loc');
+	var d_loc = JSON.parse(req.param('d_loc'));
 	var date = req.param('date');
 	var time = req.param('time');
+	var d = parseFloat(d_loc.D);
+	var k = parseFloat(d_loc.k);
 
-	var day = new Date(date).getDay().toString();
-	var hour = new Date(time).getHours().toString();
+	//hard coded array of zone coordinates 
+	var arr = [{lat: -32.929971, lon: 151.772984},
+			   {lat: -32.931280, lon: 151.770883},
+			   {lat: 37.2206992743, lon: -121.9846208062},
+			   {lat: 37.2211670292, lon: -121.9837544527},
+			   {lat: 37.2221516545, lon: -121.9833387103},
+			   {lat: 37.2222114577, lon: -121.9840012160},
+			   {lat: 37.444506, lon: -122.160745},
+			   {lat: 37.444751, lon: -122.16109}];
 
-	var points = 0;
+	var change = 10000;
+	var new_lat = null;
+	var new_lon = null;
 
-	if (day === 0 || day == 6) {
-		var points = 60;
-	} else {
-		var points = 40;
+	//find nearest zone to destination
+	for (var i = 0; i < arr.length; i++){
+		var coord_lat = arr[i].lat;
+		var coord_lon = arr[i].lon;
+		var new_change = Math.sqrt(Math.pow(k - coord_lat, 2) + Math.pow(d - coord_lon, 2));
+
+		if (new_change < change) {
+			change = new_change;
+			new_lat = coord_lat;
+			new_lon = coord_lon;
+
+		} else {
+			change = change;
+		}
 	}
 
-	if (hour > 8 && hour < 18) {
-		points = points - 20;
-	} else {
-		points = points + 20;
-	}
+	var new_coords = new_lat.toString() + ', ' + new_lon.toString();
+	process.stdout.write(new_coords);
 
-	res.send(points.toString());
+	var dayv = new Date(date).getDay().toString();
+	var hourv = new Date(time).getHours().toString();
+	var dayhour = JSON.stringify({hour: hourv, coords: new_coords});
+	res.send(dayhour);
 });
 
 app.listen(process.env.PORT || 3001);
