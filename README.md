@@ -3,6 +3,11 @@ Dash is a user-interfacing web app that tells the user given their address, dest
 
 ![alt tag](https://github.com/jasper-chen/predictive-parking/blob/master/final.png)
 
+## Tools used
+* Apache Spark
+* pandas
+* MEAN (MongoDB, Express.js, Angular.js, Node.js)
+
 ## Dependencies
 * "express" : "4.12.x",
 * "request" : "2.55.x",
