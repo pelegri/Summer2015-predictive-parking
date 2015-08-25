@@ -17,12 +17,13 @@ Dash is a user-interfacing web app that tells the user given their address, dest
 * "jade": "1.11.x"
 
 ## Getting Started
+* fork this repo
 * set up S3
-* reconfigure settings on datacollect.py
-* run datacollect.py, which collects and stores parking data from a parking data API and weather API onto S3
+* reconfigure settings on data_collect.py
+* run data_collect.py, which collects and stores parking data from a parking data API and weather API onto S3
 * port data on S3 onto a MongoDB database
-* reconfigure settings on server.py to point to MongoDB database
-* run the scripts to deploy project:
+* reconfigure auth settings on server.js and point to the MongoDB database
+* run the scripts in repo directory to deploy project:
 ```modulus create ```
 ```modulus deploy ```
 
