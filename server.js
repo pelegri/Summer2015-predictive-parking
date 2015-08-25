@@ -1,3 +1,11 @@
+/**
+Author - Jasper Chen 
+Date - August 24, 2015
+Description - This Node back-end code connects to a MongoDB database, 
+	      listens for AngularJS front-end queries and retrieves
+	      information for the client.
+**/
+
 'use strict';
 
 var http = require('http');
@@ -31,17 +39,18 @@ app.get('/', function(req, res){
 });
 
 app.get('/test/', function(req, res){
+  /* finds matching hour and coordinates in database*/
   var hour = req.param('hour');
   var coordinates = req.param('coords')
-  Parking.findOne({coordinates: coordinates, hour: hour}, function(err, thor) {
+  Parking.findOne({coordinates: coordinates, hour: hour}, function(err, result) {
   if (err) 
   	return console.error(err);
-  
-  res.send(thor);
+  res.send(result);
   });
 });
 
 app.get('/api/getestimate/', function(req, res){
+	/* finds and returns nearest tracked parking zone to user's destination */
 	var c_loc = req.param('c_loc');
 	var d_loc = JSON.parse(req.param('d_loc'));
 	var date = req.param('date');
@@ -59,7 +68,7 @@ app.get('/api/getestimate/', function(req, res){
 			   {lat: 37.444506, lon: -122.160745},
 			   {lat: 37.444751, lon: -122.16109}];
 
-	var change = 10000;
+	var change = 10000; 
 	var new_lat = null;
 	var new_lon = null;
 
