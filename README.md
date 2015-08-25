@@ -1,5 +1,5 @@
 # Dash
-Dash is a user-interfacing web app that tells the user given their address, destination and departure time the chances of them finding parking quickly.
+Dash is a user-interfacing web app that tells the user given their address, destination and departure time the chances of them finding parking quickly. I have written a blog post on it <a href="https://jasperblogs.wordpress.com/2015/07/21/52/"> here </a>
 
 ![alt tag](https://github.com/jasper-chen/predictive-parking/blob/master/final.png)
 
