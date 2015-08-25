@@ -7,6 +7,7 @@ Dash is a user-interfacing web app that tells the user given their address, dest
 * Apache Spark
 * pandas
 * MEAN (MongoDB, Express.js, Angular.js, Node.js)
+* Python
 
 ## Dependencies
 * "express" : "4.12.x",
@@ -16,7 +17,7 @@ Dash is a user-interfacing web app that tells the user given their address, dest
 * "jade": "1.11.x"
 
 ## Applications
-* Modulus
+* Modulus (to host web application)
 
 After installing modulus, simply run the scripts to deploy project:
 ```modulus create ```
